@@ -1,0 +1,9 @@
+🍿 <b><u>{{ obj.title.upper() }}</u> ({{ obj.release_year }})</b>
+Жанр: <b>{{ obj.genres }}</b>
+В гланых ролях: <b>{{ obj.actors }}</b>
+Режиссёр: <b>{{ obj.director }}</b>
+
+<u>О чём фильм?</u>
+<i>{{ obj.plot }}</i>
+
+<a href="{{ imdb_link }}">IMDB</a> {{ obj.imdb_rating }}

@@ -2,6 +2,6 @@
 
 Заполни поля imdb_link и imdb_rating.
 На основе полученных данных на русском языке заполни поля:
-title, release_year, director, plot, genres, actors (up to 5).
+title, release_year, director, plot, genres, actors.
 
 Отвечай неформатированным JSON-объектом.

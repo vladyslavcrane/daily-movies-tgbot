@@ -4,7 +4,6 @@ from aiogram.types import Message, CallbackQuery, BotCommand
 
 from app.config import config
 from app.jobs import post_movie
-from app.keyboards import admin_inline
 
 router = Router()
 
@@ -55,9 +54,7 @@ async def post_movie_handler(message: Message, bot) -> None:
         return
 
     await message.answer(f"Posting...")
-    forwarded_message = await post_movie(bot, config.MOOVIES_CHAT_USERNAME, user)
-    await message.answer(f"Post success!", reply_markup=admin_inline)
-
+    await post_movie(bot, config.MOOVIES_CHAT_USERNAME, user)
 
 @router.callback_query(F.data == "edit_post")
 async def edit_post_handler(callback: CallbackQuery):

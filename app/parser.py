@@ -32,7 +32,7 @@ def find_movie_photos_src(soup, limit=4):
 
 def strip_media_amazon_url(url, delimeter="@"):
     images_sub_pattern = re.compile(rf"(?<={delimeter}).*(?=\.)")
-    stripped_url = re.sub(images_sub_pattern, "", url)
+    stripped_url = re.sub(images_sub_pattern, "._V1_QL75", url)
     return stripped_url
 
 
@@ -42,6 +42,7 @@ def parse_imdb_urls(url):
 
     try:
         poster_url = find_poster_image_src(soup)
+
     except (KeyError, AttributeError, TypeError) as exc:
         log.exception("Parsing `{url}` movie poster failed with `{exc}`")
         poster_url = ""
@@ -51,4 +52,4 @@ def parse_imdb_urls(url):
         log.exception("Parsing `{url}` movie's photos failed with exception: {exc}")
         photos_url = []
 
-    return {"poster_url": poster_url, "photos_url": photos_url}
+    return [poster_url, *photos_url]

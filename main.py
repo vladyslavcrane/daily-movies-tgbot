@@ -14,6 +14,7 @@ from app.handlers import router, set_default_commands
 from app.jobs import post_movie
 from app.config import config
 from app.scheduler import setup_scheduler
+from app.db import init_mongodb
 
 # Bot token can be obtained via https://t.me/BotFather
 TOKEN = getenv("TG_BOT_TOKEN")
@@ -31,6 +32,9 @@ async def main() -> None:
     ]
 
     setup_scheduler(bot, jobs)
+
+    ########## Mongo
+    await init_mongodb()
 
     await set_default_commands(bot)
     # And the run events dispatching

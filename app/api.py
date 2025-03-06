@@ -2,9 +2,12 @@ import logging
 import os
 import json
 from typing import Union
+
+import aiofiles
 import openai
 
 from app.config import config
+from app.db.mongo.documents import Moovie
 
 log = logging.getLogger(__name__)
 
@@ -13,16 +16,23 @@ client = openai.Client()
 def get_prompt_from_file(fp: Union[str, "os.PathLike[str]"]):
     try:
         with open(fp) as file:
-            prompt = file.read()
+            return file.read()
     except FileNotFoundError:
         log.error(
             f"Trying to get a prompt from file `{fp}` failed. Returning empty string."
         )
         return ""
-    return prompt
 
-
-def _get_completion(prompt: str = ""):
+async def get_mocked_completion():
+    file_path = config.BASE_DIR / 'gpt_response.json'
+    log.info(f'Using mock data `{file_path}` for posting.')
+    async with aiofiles.open(file_path) as f:
+        file_content = await f.read()
+        return json.loads(file_content)
+    
+async def _get_completion(prompt: str = ""):
+    if config.mock_data:
+        return await get_mocked_completion()
 
     if not prompt:
         prompt = get_prompt_from_file(config.BASE_DIR / "prompt.txt")
@@ -63,10 +73,10 @@ def _get_completion(prompt: str = ""):
 
     return {}
 
-def fetch_post_movie_data():
-    if config.mock_data:
-        file_path = config.BASE_DIR / 'gpt_response.json'
-        log.info(f'Using mock data `{file_path}` for posting.')
-        with open(file_path) as f:
-            return json.load(f)
-    return _get_completion()
+async def fetch_post_movie_data():
+    moovie_data = await _get_completion()
+
+    moovie = Moovie(**moovie_data)
+    await moovie.insert()
+
+    return moovie
